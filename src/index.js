@@ -356,4 +356,23 @@ if (path === "/kv/get-raw") {
       { status: 404, headers: { "Content-Type": "application/json" } }
     );
   },
+
+
+    // // The new scheduled handler for Cron Triggers
+    // async scheduled(event, env, ctx) {
+    //     // This function will be called once every minute.
+    //     // The 'event' object contains the scheduled time.
+    //     console.log(`🕐 Cron job triggered at: ${new Date(event.scheduledTime).toISOString()}`);
+
+    //   const url = `http://de1.api.radio-browser.info/json/tags`;
+    //   const response = await fetch(url);
+    //   const data = await response.json();
+    //   console.log("Fetched data from API:", data);
+
+    
+    // }
+
+
+
+
 };
