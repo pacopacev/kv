@@ -17,5 +17,5 @@ binding = "HYPERDRIVE"
 id = "7aad2543fff5439f8164abee856ac53a"
 # ⚠️ localConnectionString is now in .dev.vars – remove it from here!
 
-[triggers]
-crons = ["* * * * *"]
+#[triggers]
+#crons = ["* * * * *"]
