@@ -1,0 +1,18 @@
+name = "kv"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+kv_namespaces = [
+  { binding = "KV_BINDING", id = "15ab7451de044296bdea3bdf2b841160" }
+]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cfdb"
+database_id = "4fa75170-04af-4fc2-83d1-499148160ef0"
+
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "7aad2543fff5439f8164abee856ac53a"
+# ⚠️ localConnectionString is now in .dev.vars – remove it from here!
