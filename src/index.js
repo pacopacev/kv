@@ -358,19 +358,61 @@ if (path === "/kv/get-raw") {
   },
 
 
-    // // The new scheduled handler for Cron Triggers
-    // async scheduled(event, env, ctx) {
-    //     // This function will be called once every minute.
-    //     // The 'event' object contains the scheduled time.
-    //     console.log(`🕐 Cron job triggered at: ${new Date(event.scheduledTime).toISOString()}`);
+    // The new scheduled handler for Cron Triggers
+  async scheduled(event, env, ctx) {
+  console.log(`🕐 Cron job triggered at: ${new Date(event.scheduledTime).toISOString()}`);
 
-    //   const url = `http://de1.api.radio-browser.info/json/tags`;
-    //   const response = await fetch(url);
-    //   const data = await response.json();
-    //   console.log("Fetched data from API:", data);
+  const binding_dbelo = env.HYPERDRIVE;
+  const binding_dbMetabase = env.METABASE_BINDING;
 
-    
-    // }
+  const results = {
+    hyperdrive: null,
+    metabase: null,
+    errors: {}
+  };
+
+  // --- Hyperdrive test ---
+  try {
+    const client = new Client({
+      connectionString: binding_dbelo.connectionString
+    });
+
+    await client.connect();
+    const res = await client.query("SELECT 1");
+    await client.end();
+
+    results.hyperdrive = {
+      ok: true,
+      rows: res.rows
+    };
+  } catch (err) {
+    results.errors.hyperdrive = err.message;
+  }
+
+  // --- Metabase test ---
+  try {
+    const client2 = new Client({
+      connectionString: binding_dbMetabase.connectionString
+    });
+
+    await client2.connect();
+    const res2 = await client2.query("SELECT 1");
+    await client2.end();
+
+    results.metabase = {
+      ok: true,
+      rows: res2.rows
+    };
+  } catch (err) {
+    results.errors.metabase = err.message;
+  }
+
+  return new Response(JSON.stringify(results), {
+    status: 200,
+    headers: { "Content-Type": "application/json" }
+  });
+}
+
 
 
 

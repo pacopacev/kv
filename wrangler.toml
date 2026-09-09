@@ -15,7 +15,11 @@ database_id = "4fa75170-04af-4fc2-83d1-499148160ef0"
 [[hyperdrive]]
 binding = "HYPERDRIVE"
 id = "7aad2543fff5439f8164abee856ac53a"
-# ⚠️ localConnectionString is now in .dev.vars – remove it from here!
 
-#[triggers]
-#crons = ["* * * * *"]
+[[hyperdrive]]
+binding = "METABASE_BINDING"
+id = "18cfca7acd35410a87c911481eba98ae"
+
+[triggers]
+crons = ["0 3 * * *"]
+
