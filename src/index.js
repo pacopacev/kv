@@ -183,7 +183,7 @@ if (path === "/kv/get-raw") {
       <li><a href="/kv/set">/kv/set</a> - Set data in KV</li>
       <li><a href="/kv/get?param=test1">/kv/get?param=test1</a> - Get data from KV</li>
       <li><a href="/db">/db</a> - Query D1 database</li>
-      <li><a href="/chat">/chat</a> - Chat with ChatPat</li>
+  
     </ul>
 </body>
 </html>`;
@@ -352,6 +352,8 @@ if (path === "/kv/get-raw") {
     }
     
     if (path === "/chat") {
+      const param = url.searchParams.get("param");
+      console.log("Chat endpoint called with param:", param);
 
       if (!param) {
         return new Response(
@@ -360,7 +362,10 @@ if (path === "/kv/get-raw") {
         );
       }
       console.log("Param", param);
-      // return env.ASSETS.fetch(new URL("/chat.html", request.url));
+
+      const assetUrl = new URL(request.url);
+      assetUrl.pathname = "/chat.html";
+      return env.ASSETS.fetch(assetUrl);
     }
 
     // --- 404 ---

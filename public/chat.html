@@ -466,6 +466,8 @@
     </footer>
     <script>
         const WS_URL = "wss://websocket-server.pgdimitrov.workers.dev/websocket";
+        const pageParams = new URLSearchParams(window.location.search);
+        const roomParam = pageParams.get("param");
 
 
         const userNameInput = document.getElementById("user-name");
@@ -479,6 +481,7 @@
         const chat = document.getElementById("chat");
 
         const msgInput = document.getElementById("msg");
+        msgInput.setAttribute("placeholder", `Type a message in '${roomParam}'`);
         msgInput.disabled = true;
 
         const sendBtn = document.getElementById("send");
@@ -571,7 +574,7 @@
         sendBtn.onclick = () => {
             if (ws.readyState === WebSocket.OPEN) {
                 const msg = {
-                    room: 'default', // optional, for room-based routing on server
+                    room: roomParam || 'default', // optional, for room-based routing on server
                     username: userNameInput.value,          // optional, for routing on server
                     content: msgInput.value,
                     timestamp: Date.now(),
