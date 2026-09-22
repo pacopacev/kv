@@ -3,6 +3,10 @@ main = "src/index.js"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
 kv_namespaces = [
   { binding = "KV_BINDING", id = "15ab7451de044296bdea3bdf2b841160" }
 ]
@@ -21,5 +25,4 @@ binding = "METABASE_BINDING"
 id = "18cfca7acd35410a87c911481eba98ae"
 
 [triggers]
-crons = ["0 3 * * *"]
-
+crons = ["0 17 * * *"]

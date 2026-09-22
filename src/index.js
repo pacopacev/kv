@@ -183,6 +183,7 @@ if (path === "/kv/get-raw") {
       <li><a href="/kv/set">/kv/set</a> - Set data in KV</li>
       <li><a href="/kv/get?param=test1">/kv/get?param=test1</a> - Get data from KV</li>
       <li><a href="/db">/db</a> - Query D1 database</li>
+      <li><a href="/chat">/chat</a> - Chat with ChatPat</li>
     </ul>
 </body>
 </html>`;
@@ -349,9 +350,21 @@ if (path === "/kv/get-raw") {
         );
       }
     }
+    
+    if (path === "/chat") {
+
+      if (!param) {
+        return new Response(
+          JSON.stringify({ error: "Missing 'param' parameter" }),
+          { status: 400, headers: { "Content-Type": "application/json" } }
+        );
+      }
+      console.log("Param", param);
+      // return env.ASSETS.fetch(new URL("/chat.html", request.url));
+    }
 
     // --- 404 ---
-    return new Response(
+    return new Response(  
       JSON.stringify({ error: "Not Found", path: path }),
       { status: 404, headers: { "Content-Type": "application/json" } }
     );
@@ -407,10 +420,7 @@ if (path === "/kv/get-raw") {
     results.errors.metabase = err.message;
   }
 
-  return new Response(JSON.stringify(results), {
-    status: 200,
-    headers: { "Content-Type": "application/json" }
-  });
+  console.log("Cron results:", JSON.stringify(results));
 }
 
 
