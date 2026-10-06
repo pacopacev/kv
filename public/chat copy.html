@@ -83,7 +83,7 @@
             font-size: 16px;
             background: #fff;
             color: #000;
-            width: 200px;
+            width: 150px;
         }
 
         #user-name {
@@ -426,12 +426,12 @@
         </div>
 
 
-        <div id="input-room">
-            <input id="room-name" type="text" placeholder="Name of the room" />
-            <button id="send">Enter</button>
-        </div>
+        <!-- <div id="input-room">
+            <input id="room-name" type="text" placeholder="Room Name" />
+            <span class="indicator" id="indicator" title="At least 3 characters">!</span>
+        </div> -->
 
-        <!-- <div id="input-user">
+        <div id="input-user">
             <input id="user-name" type="text" placeholder="Username" />
             <span class="indicator" id="indicator" title="At least 3 characters">!</span>
         </div>
@@ -440,7 +440,7 @@
         <div id="input-bar">
             <input id="msg" placeholder="Type a message…" />
             <button id="send">Send</button>
-        </div> -->
+        </div>
     </header>
 
     <main class="main-content">
@@ -464,28 +464,7 @@
             <span id="conn"></span>
         </div>
     </footer>
-
     <script>
-        const roomNameInput = document.getElementById("room-name");
-        roomNameInput.addEventListener("input", () => {
-            const roomName = roomNameInput.value.trim();
-            if (roomName) {
-                sendBtn.disabled = false;
-            } else {
-                sendBtn.disabled = true;
-            }
-        });
-        const sendBtn = document.getElementById("send");
-        sendBtn.disabled = true;
-        sendBtn.addEventListener("click", () => {
-            const roomName = roomNameInput.value.trim();
-            if (roomName) {
-                window.location.href = `chat.html?param=${encodeURIComponent(roomName)}`;
-            }
-        });
-
-    </script>
-    <!-- <script>
         const WS_URL = "wss://websocket-server.pgdimitrov.workers.dev/websocket";
         const pageParams = new URLSearchParams(window.location.search);
         const roomParam = pageParams.get("param");
@@ -539,82 +518,82 @@
 
 
 
-        // function addMessage(text, cls = "system") {
-        //     const div = document.createElement("div");
-        //     div.textContent = text;
-        //     div.className = "msg " + cls;
-        //     chat.appendChild(div);
-        //     chat.scrollTop = chat.scrollHeight;
-        //     autoScrollMessages();
+        function addMessage(text, cls = "system") {
+            const div = document.createElement("div");
+            div.textContent = text;
+            div.className = "msg " + cls;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+            autoScrollMessages();
 
-        //     const conn = document.getElementById("conn");
-        //     conn.textContent = "Status: Connected";
-        //     conn.classList.add('system-connected1');
+            const conn = document.getElementById("conn");
+            conn.textContent = "Status: Connected";
+            conn.classList.add('system-connected1');
 
-        // }
+        }
 
-        // function updateConnectionStatus(status) {
-        //     const conn = document.getElementById("conn");
-        //     conn.textContent = `Status: ${status}`;
-        //     if (status === "Connected") {
-        //         conn.classList.remove('system-disconnected1');
-        //         conn.classList.add('system-connected1');
-        //     } else {
-        //         conn.classList.remove('system-connected1');
-        //         conn.classList.add('system-disconnected1');
-        //     }
-        // }
+        function updateConnectionStatus(status) {
+            const conn = document.getElementById("conn");
+            conn.textContent = `Status: ${status}`;
+            if (status === "Connected") {
+                conn.classList.remove('system-disconnected1');
+                conn.classList.add('system-connected1');
+            } else {
+                conn.classList.remove('system-connected1');
+                conn.classList.add('system-disconnected1');
+            }
+        }
 
-        // let ws;
+        let ws;
 
-        // function connect() {
-        //     updateConnectionStatus("Connecting…");
+        function connect() {
+            updateConnectionStatus("Connecting…");
 
-        //     ws = new WebSocket(WS_URL);
+            ws = new WebSocket(WS_URL);
 
-        //     // ws.onopen = () => addMessage("Connected", "system-connected");
-        //     ws.onopen = () => {
+            // ws.onopen = () => addMessage("Connected", "system-connected");
+            ws.onopen = () => {
 
-        //         updateConnectionStatus("Connected");
-        //     };
+                updateConnectionStatus("Connected");
+            };
 
 
-        //     ws.onmessage = (e) => {
-        //         const t = e.data;
-        //         console.log("Received:", t);
-        //         if (t.includes("wrote")) addMessage(t, "me");
-        //         else addMessage(t, "other");
-        //     };
+            ws.onmessage = (e) => {
+                const t = e.data;
+                console.log("Received:", t);
+                if (t.includes("wrote")) addMessage(t, "me");
+                else addMessage(t, "other");
+            };
 
-        //     ws.onclose = () => {
-        //         updateConnectionStatus("Disconnected");
-        //         setTimeout(connect, 2000);
-        //     };
-        // }
+            ws.onclose = () => {
+                updateConnectionStatus("Disconnected");
+                setTimeout(connect, 2000);
+            };
+        }
 
-        // sendBtn.onclick = () => {
-        //     if (ws.readyState === WebSocket.OPEN) {
-        //         const msg = {
-        //             room: roomParam || 'default', // optional, for room-based routing on server
-        //             username: userNameInput.value,          // optional, for routing on server
-        //             content: msgInput.value,
-        //             timestamp: Date.now(),
-        //             // add any other fields you need
-        //         };
-        //         ws.send(JSON.stringify(msg));
-        //         ws.addEventListener("message", (event) => {
-        //             console.log("Receivedd:", event.data);
-        //         });
-        //         msgInput.value = "";
-        //     }
-        // };
+        sendBtn.onclick = () => {
+            if (ws.readyState === WebSocket.OPEN) {
+                const msg = {
+                    room: roomParam || 'default', // optional, for room-based routing on server
+                    username: userNameInput.value,          // optional, for routing on server
+                    content: msgInput.value,
+                    timestamp: Date.now(),
+                    // add any other fields you need
+                };
+                ws.send(JSON.stringify(msg));
+                ws.addEventListener("message", (event) => {
+                    console.log("Receivedd:", event.data);
+                });
+                msgInput.value = "";
+            }
+        };
 
-        // msgInput.onkeydown = (e) => {
-        //     if (e.key === "Enter") sendBtn.onclick();
-        // };
+        msgInput.onkeydown = (e) => {
+            if (e.key === "Enter") sendBtn.onclick();
+        };
 
-        // connect();
-    </script> -->
+        connect();
+    </script>
 
 
     <script>
@@ -627,7 +606,7 @@
         });
     </script>
 
-    <!-- <script>
+    <script>
         function autoScrollMessages() {
             const container = document.getElementById('chat');
             if (!container) return;
@@ -636,7 +615,7 @@
                 container.scrollTop = container.scrollHeight;
             });
         }
-    </script> -->
+    </script>
 
 </body>
 

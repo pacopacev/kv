@@ -382,10 +382,12 @@ if (path === "/kv/get-raw") {
 
   const binding_dbelo = env.HYPERDRIVE;
   const binding_dbMetabase = env.METABASE_BINDING;
+  const binding_radio = env.RADIO_BINDING;
 
   const results = {
     hyperdrive: null,
     metabase: null,
+    radio: null,
     errors: {}
   };
 
@@ -423,6 +425,24 @@ if (path === "/kv/get-raw") {
     };
   } catch (err) {
     results.errors.metabase = err.message;
+  }
+
+  // --- Radio test ---
+  try {
+    const client3 = new Client({
+      connectionString: binding_radio.connectionString
+    });
+
+    await client3.connect();
+    const res3 = await client3.query("SELECT 1");
+    await client3.end();
+
+    results.radio = {
+      ok: true,
+      rows: res3.rows
+    };
+  } catch (err) {
+    results.errors.radio = err.message;
   }
 
   console.log("Cron results:", JSON.stringify(results));
