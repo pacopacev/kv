@@ -376,77 +376,84 @@ if (path === "/kv/get-raw") {
   },
 
 
-    // The new scheduled handler for Cron Triggers
+  // Cron schedules are evaluated in UTC. Use waitUntil so the runtime keeps
+  // the asynchronous checks alive until they finish.
   async scheduled(event, env, ctx) {
-  console.log(`🕐 Cron job triggered at: ${new Date(event.scheduledTime).toISOString()}`);
+    ctx.waitUntil((async () => {
+      const scheduledAt = new Date(event.scheduledTime);
+      console.log(`Cron job triggered at: ${scheduledAt.toISOString()}`);
 
-  const binding_dbelo = env.HYPERDRIVE;
-  const binding_dbMetabase = env.METABASE_BINDING;
-  const binding_radio = env.RADIO_BINDING;
+      const results = { hyperdrive: null, metabase: null, radio: null, errors: {} };
 
-  const results = {
-    hyperdrive: null,
-    metabase: null,
-    radio: null,
-    errors: {}
-  };
+      // --- Hyperdrive test ---
+      let hyperdriveClient;
+      try {
+        if (!env.HYPERDRIVE?.connectionString) {
+          throw new Error("Missing HYPERDRIVE binding or connectionString");
+        }
+        hyperdriveClient = new Client({ connectionString: env.HYPERDRIVE.connectionString });
+        await hyperdriveClient.connect();
+        const result = await hyperdriveClient.query("SELECT 1");
+        results.hyperdrive = { ok: true, rows: result.rows };
+      } catch (err) {
+        results.errors.hyperdrive = err instanceof Error ? err.message : String(err);
+      } finally {
+        if (hyperdriveClient) {
+          try {
+            await hyperdriveClient.end();
+          } catch (err) {
+            results.errors.hyperdriveCleanup = err instanceof Error ? err.message : String(err);
+          }
+        }
+      }
 
-  // --- Hyperdrive test ---
-  try {
-    const client = new Client({
-      connectionString: binding_dbelo.connectionString
-    });
+      // --- Metabase test ---
+      let metabaseClient;
+      try {
+        if (!env.METABASE_BINDING?.connectionString) {
+          throw new Error("Missing METABASE_BINDING or connectionString");
+        }
+        metabaseClient = new Client({ connectionString: env.METABASE_BINDING.connectionString });
+        await metabaseClient.connect();
+        const result = await metabaseClient.query("SELECT 1");
+        results.metabase = { ok: true, rows: result.rows };
+      } catch (err) {
+        results.errors.metabase = err instanceof Error ? err.message : String(err);
+      } finally {
+        if (metabaseClient) {
+          try {
+            await metabaseClient.end();
+          } catch (err) {
+            results.errors.metabaseCleanup = err instanceof Error ? err.message : String(err);
+          }
+        }
+      }
 
-    await client.connect();
-    const res = await client.query("SELECT 1");
-    await client.end();
+      // --- Radio test ---
+      let radioClient;
+      try {
+        if (!env.RADIO_BINDING?.connectionString) {
+          throw new Error("Missing RADIO_BINDING or connectionString");
+        }
+        radioClient = new Client({ connectionString: env.RADIO_BINDING.connectionString });
+        await radioClient.connect();
+        const result = await radioClient.query("SELECT 1");
+        results.radio = { ok: true, rows: result.rows };
+      } catch (err) {
+        results.errors.radio = err instanceof Error ? err.message : String(err);
+      } finally {
+        if (radioClient) {
+          try {
+            await radioClient.end();
+          } catch (err) {
+            results.errors.radioCleanup = err instanceof Error ? err.message : String(err);
+          }
+        }
+      }
 
-    results.hyperdrive = {
-      ok: true,
-      rows: res.rows
-    };
-  } catch (err) {
-    results.errors.hyperdrive = err.message;
+      console.log("Cron results:", JSON.stringify(results));
+    })());
   }
-
-  // --- Metabase test ---
-  try {
-    const client2 = new Client({
-      connectionString: binding_dbMetabase.connectionString
-    });
-
-    await client2.connect();
-    const res2 = await client2.query("SELECT 1");
-    await client2.end();
-
-    results.metabase = {
-      ok: true,
-      rows: res2.rows
-    };
-  } catch (err) {
-    results.errors.metabase = err.message;
-  }
-
-  // --- Radio test ---
-  try {
-    const client3 = new Client({
-      connectionString: binding_radio.connectionString
-    });
-
-    await client3.connect();
-    const res3 = await client3.query("SELECT 1");
-    await client3.end();
-
-    results.radio = {
-      ok: true,
-      rows: res3.rows
-    };
-  } catch (err) {
-    results.errors.radio = err.message;
-  }
-
-  console.log("Cron results:", JSON.stringify(results));
-}
 
 
 
