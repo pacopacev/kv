@@ -385,49 +385,49 @@ if (path === "/kv/get-raw") {
 
       const results = { hyperdrive: null, metabase: null, radio: null, errors: {} };
 
-      // --- Hyperdrive test ---
-      let hyperdriveClient;
-      try {
-        if (!env.HYPERDRIVE?.connectionString) {
-          throw new Error("Missing HYPERDRIVE binding or connectionString");
-        }
-        hyperdriveClient = new Client({ connectionString: env.HYPERDRIVE.connectionString });
-        await hyperdriveClient.connect();
-        const result = await hyperdriveClient.query("SELECT 1");
-        results.hyperdrive = { ok: true, rows: result.rows };
-      } catch (err) {
-        results.errors.hyperdrive = err instanceof Error ? err.message : String(err);
-      } finally {
-        if (hyperdriveClient) {
-          try {
-            await hyperdriveClient.end();
-          } catch (err) {
-            results.errors.hyperdriveCleanup = err instanceof Error ? err.message : String(err);
-          }
-        }
-      }
+      // // --- Hyperdrive test ---
+      // let hyperdriveClient;
+      // try {
+      //   if (!env.HYPERDRIVE?.connectionString) {
+      //     throw new Error("Missing HYPERDRIVE binding or connectionString");
+      //   }
+      //   hyperdriveClient = new Client({ connectionString: env.HYPERDRIVE.connectionString });
+      //   await hyperdriveClient.connect();
+      //   const result = await hyperdriveClient.query("SELECT 1");
+      //   results.hyperdrive = { ok: true, rows: result.rows };
+      // } catch (err) {
+      //   results.errors.hyperdrive = err instanceof Error ? err.message : String(err);
+      // } finally {
+      //   if (hyperdriveClient) {
+      //     try {
+      //       await hyperdriveClient.end();
+      //     } catch (err) {
+      //       results.errors.hyperdriveCleanup = err instanceof Error ? err.message : String(err);
+      //     }
+      //   }
+      // }
 
-      // --- Metabase test ---
-      let metabaseClient;
-      try {
-        if (!env.METABASE_BINDING?.connectionString) {
-          throw new Error("Missing METABASE_BINDING or connectionString");
-        }
-        metabaseClient = new Client({ connectionString: env.METABASE_BINDING.connectionString });
-        await metabaseClient.connect();
-        const result = await metabaseClient.query("SELECT 1");
-        results.metabase = { ok: true, rows: result.rows };
-      } catch (err) {
-        results.errors.metabase = err instanceof Error ? err.message : String(err);
-      } finally {
-        if (metabaseClient) {
-          try {
-            await metabaseClient.end();
-          } catch (err) {
-            results.errors.metabaseCleanup = err instanceof Error ? err.message : String(err);
-          }
-        }
-      }
+      // // --- Metabase test ---
+      // let metabaseClient;
+      // try {
+      //   if (!env.METABASE_BINDING?.connectionString) {
+      //     throw new Error("Missing METABASE_BINDING or connectionString");
+      //   }
+      //   metabaseClient = new Client({ connectionString: env.METABASE_BINDING.connectionString });
+      //   await metabaseClient.connect();
+      //   const result = await metabaseClient.query("SELECT 1");
+      //   results.metabase = { ok: true, rows: result.rows };
+      // } catch (err) {
+      //   results.errors.metabase = err instanceof Error ? err.message : String(err);
+      // } finally {
+      //   if (metabaseClient) {
+      //     try {
+      //       await metabaseClient.end();
+      //     } catch (err) {
+      //       results.errors.metabaseCleanup = err instanceof Error ? err.message : String(err);
+      //     }
+      //   }
+      // }
 
       // --- Radio test ---
       let radioClient;
